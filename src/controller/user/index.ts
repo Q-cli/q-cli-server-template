@@ -13,11 +13,8 @@ export class UserController {
       const error = new Error(errorTypes.USER_CREATE_FAILED);
       return ctx.app.emit("error", error, ctx);
     }
-    console.log(
-      "user create",
-      result,
-      responseFormat(true, { _id: result.insertedId })
-    );
+
+    ctx.status = 200;
     ctx.body = responseFormat(true, { _id: result.insertedId });
   }
 }

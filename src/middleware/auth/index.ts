@@ -25,7 +25,7 @@ export async function vertifyLogin(ctx: CTX, next: Next) {
   }
 
   // @ts-ignore
-  ctx.request.user = user;
+  ctx.user = user;
 
   await next();
 }

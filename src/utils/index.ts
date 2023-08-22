@@ -4,6 +4,8 @@ import fs from "fs";
 import path from "path";
 import { Next } from "koa";
 import errorTypes from "../constants/error-types";
+import whitePath from "../constants/white-path";
+import dayjs from 'dayjs';
 
 export function responseFormat(
   success: boolean,
@@ -31,7 +33,7 @@ export function responseFormat(
 }
 
 const PrivateKey = fs.readFileSync(
-  path.resolve(__dirname, "../../private.key"),
+  path.resolve(process.cwd(), "./private.key"),
   "utf-8"
 );
 
@@ -43,23 +45,33 @@ export function generateToken(user: User.User) {
 }
 
 const PublicKey = fs.readFileSync(
-  path.resolve(__dirname, "../../public.key"),
+  path.resolve(process.cwd(), "./public.key"),
   "utf-8"
 );
 
-export function vertifyAuth(ctx: CTX, next: Next) {
-  const token = ctx.request.headers.authorization;
+export async function vertifyAuth(ctx: CTX, next: Next) {
+  const token = ctx.cookies.get("token");
+  const url = ctx.request.url;
+
   try {
-    if (!token) {
-      throw new Error(errorTypes.UN_AUTHORIZATION);
+    if (!whitePath.find((path) => path.includes(url))) {
+      if (!token) {
+        throw new Error(errorTypes.UN_AUTHORIZATION);
+      }
+      const user = jwt.verify(token, PublicKey, { algorithms: ["RS256"] });
+      ctx.user = user;
     }
-    console.log("vertifyAuth", token);
-    console.log("PublicKey", PublicKey);
-    const user = jwt.verify(token, PublicKey, { algorithms: ["RS256"] });
-    console.log("user", user);
-    ctx.user = user;
-    next();
+    await next();
   } catch (error) {
     ctx.app.emit("error", error, ctx);
   }
+}
+
+export async function logRequestInfoMiddleware(ctx:CTX, next: Next) {
+  console.log(
+    `${dayjs().format("YYYY-MM-DD HH:mm:ss")} ${ctx.request.url} ${
+      ctx.user?.name ?? ""
+    }`
+  );
+  await next();
 }

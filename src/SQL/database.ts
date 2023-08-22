@@ -1,4 +1,4 @@
-import { Db, MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient, ServerApiVersion } from "mongodb";
 
 const client = new MongoClient("mongodb://localhost:27017", {
   serverApi: {
@@ -8,16 +8,13 @@ const client = new MongoClient("mongodb://localhost:27017", {
   },
 });
 
-let DB: Db | null = null;
-
 client
   .connect()
-  .then((connect) => {
-    DB = connect.db("server_template");
-    console.log("DB connected");
+  .then(() => {
+    console.log("mongodb is connected.");
   })
   .catch((err) => {
-    console.error("DB failed: ", err);
+    console.error("mongodb connect failed: ", err);
   });
 
 export function getDb(dbName: string = "server_template") {

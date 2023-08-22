@@ -5,7 +5,7 @@ import { generateToken, responseFormat } from "../../utils";
 class AuthController {
   async login(ctx: CTX, next: Next) {
     // @ts-ignore
-    const user = ctx.request.user as User.User;
+    const user = ctx.user as User.User;
 
     const token = generateToken(user);
 

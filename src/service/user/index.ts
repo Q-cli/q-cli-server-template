@@ -11,7 +11,6 @@ export class UserService {
       createTime: time,
       updateTime: time,
     });
-    console.log("created user result: ", result);
     return result;
   }
 

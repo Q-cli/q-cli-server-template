@@ -15,7 +15,6 @@ export async function vertifyUser(ctx: CTX<User.User>, next: Next) {
   const result = await userService.getUserByName(name);
 
   if (result?._id) {
-    console.log("user", result, result._id);
     const error = new Error(errorTypes.USER_ALREADY_EXISTS);
     return ctx.app.emit("error", error, ctx);
   }
