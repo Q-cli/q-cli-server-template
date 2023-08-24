@@ -5,4 +5,5 @@ export default {
   USER_NOT_FOUND: "user_not_found",
   INVALID_PASSWORD: "invalid_password",
   UN_AUTHORIZATION: "un_authorization",
+  USER_UPDATE_FAILED: "user update failed",
 };

@@ -17,6 +17,26 @@ export class UserController {
     ctx.status = 200;
     ctx.body = responseFormat(true, { _id: result.insertedId });
   }
+
+  async getList(ctx: CTX, next: Next) {
+    const params = ctx.request.query as User.Params;
+    const result = await userService.getUserList(params);
+    ctx.body = responseFormat(true, { list: result });
+  }
+
+  async deleteUserById(ctx: CTX, next: Next) {
+    const result = await userService.deleteUserById(ctx.request.query);
+    ctx.body = responseFormat(true, { data: result });
+  }
+
+  async updateUser(ctx: CTX, next: Next) {
+    const result = await userService.updateUser(ctx.request.body as User.User);
+    if (!(result.acknowledged && result.modifiedCount && result.matchedCount)) {
+      const error = new Error(errorTypes.USER_UPDATE_FAILED);
+      return ctx.app.emit("error", error, ctx);
+    }
+    ctx.body = responseFormat(true, { data: result });
+  }
 }
 
 export default new UserController();

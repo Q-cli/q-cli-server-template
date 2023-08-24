@@ -1,11 +1,8 @@
-import { CTX, Response } from "./interface";
+import { Response } from "./interface";
 import jwt from "jsonwebtoken";
 import fs from "fs";
 import path from "path";
-import { Next } from "koa";
-import errorTypes from "../constants/error-types";
-import whitePath from "../constants/white-path";
-import dayjs from 'dayjs';
+import { ObjectId } from "mongodb";
 
 export function responseFormat(
   success: boolean,
@@ -37,6 +34,15 @@ const PrivateKey = fs.readFileSync(
   "utf-8"
 );
 
+const PublicKey = fs.readFileSync(
+  path.resolve(process.cwd(), "./public.key"),
+  "utf-8"
+);
+
+export function formatToken(token: string) {
+  return jwt.verify(token, PublicKey, { algorithms: ["RS256"] });
+}
+
 export function generateToken(user: User.User) {
   return jwt.sign(user, PrivateKey, {
     expiresIn: 24 * 60 * 60,
@@ -44,34 +50,26 @@ export function generateToken(user: User.User) {
   });
 }
 
-const PublicKey = fs.readFileSync(
-  path.resolve(process.cwd(), "./public.key"),
-  "utf-8"
-);
+export function formatQueryParams(query: any) {
+  query = Object.assign({}, query);
+  const regexQuery: { [key: string]: RegExp | ObjectId } = {};
 
-export async function vertifyAuth(ctx: CTX, next: Next) {
-  const token = ctx.cookies.get("token");
-  const url = ctx.request.url;
-
-  try {
-    if (!whitePath.find((path) => path.includes(url))) {
-      if (!token) {
-        throw new Error(errorTypes.UN_AUTHORIZATION);
+  // 遍历查询参数对象，生成模糊查询对象
+  for (const key in query) {
+    if (query.hasOwnProperty(key)) {
+      const value = query[key];
+      if (key === "_id") {
+        regexQuery[key] = new ObjectId(value); // 对 _id 进行全匹配
+      } else {
+        const regex = new RegExp(value, "i");
+        regexQuery[key] = regex;
       }
-      const user = jwt.verify(token, PublicKey, { algorithms: ["RS256"] });
-      ctx.user = user;
     }
-    await next();
-  } catch (error) {
-    ctx.app.emit("error", error, ctx);
   }
+
+  return regexQuery;
 }
 
-export async function logRequestInfoMiddleware(ctx:CTX, next: Next) {
-  console.log(
-    `${dayjs().format("YYYY-MM-DD HH:mm:ss")} ${ctx.request.url} ${
-      ctx.user?.name ?? ""
-    }`
-  );
-  await next();
+export function generateTimeForNow() {
+  return new Date().getTime();
 }

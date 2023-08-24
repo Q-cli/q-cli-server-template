@@ -22,11 +22,11 @@ export async function vertifyUser(ctx: CTX<User.User>, next: Next) {
   await next();
 }
 
-export function formatPassword(ctx: CTX, next: Next) {
+export async function formatPassword(ctx: CTX, next: Next) {
   if ((ctx.request.body as User.User)?.password) {
     (ctx.request.body as User.User).password = md5password(
       (ctx.request.body as User.User).password
     );
   }
-  next();
+  await next();
 }
