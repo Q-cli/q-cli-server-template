@@ -5,14 +5,14 @@ import { CTX } from "../../utils/interface";
 import { md5password } from "../../utils/password-handle";
 
 export async function vertifyLogin(ctx: CTX, next: Next) {
-  const { name, password } = (ctx.request.body ?? {}) as User.User;
+  const { username, password } = (ctx.request.body ?? {}) as User.User;
 
-  if (!name || !password) {
+  if (!username || !password) {
     const error = new Error(errorTypes.NAME_OR_PASSWORD_IS_REQUIRED);
     return ctx.app.emit("error", error, ctx);
   }
 
-  const user = await userService.getUserByName(name);
+  const user = await userService.getUserByName(username);
 
   if (!user) {
     const error = new Error(errorTypes.USER_NOT_FOUND);

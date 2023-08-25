@@ -1,12 +1,12 @@
 declare namespace User {
   interface Params {
     _id?: string;
-    name?: string;
+    username?: string;
   }
 
   interface User {
     _id: string;
-    name: string;
+    username: string;
     password: string;
     createTime: number;
     updateTime: number;

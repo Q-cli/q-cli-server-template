@@ -5,14 +5,14 @@ import userService from "../../service/user";
 import { md5password } from "../../utils/password-handle";
 
 export async function vertifyUser(ctx: CTX<User.User>, next: Next) {
-  const { name, password } = (ctx.request.body ?? {}) as User.User;
+  const { username, password } = (ctx.request.body ?? {}) as User.User;
 
-  if (!name || !password || name === "" || password === "") {
+  if (!username || !password || username === "" || password === "") {
     const error = new Error(errorTypes.NAME_OR_PASSWORD_IS_REQUIRED);
     return ctx.app.emit("error", error, ctx);
   }
 
-  const result = await userService.getUserByName(name);
+  const result = await userService.getUserByName(username);
 
   if (result?._id) {
     const error = new Error(errorTypes.USER_ALREADY_EXISTS);

@@ -45,7 +45,7 @@ export function formatToken(token: string) {
 
 export function generateToken(user: User.User) {
   return jwt.sign(user, PrivateKey, {
-    expiresIn: 24 * 60 * 60,
+    expiresIn: 24 * 60 * 60 * 1000,
     algorithm: "RS256",
   });
 }

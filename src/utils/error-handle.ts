@@ -6,11 +6,12 @@ export default function errorHandle(error: Error, ctx: CTX<any>) {
   let status = 200,
     message;
 
-  console.error(error);
+  console.error(error.message);
+  console.log();
 
   switch (error.message) {
     case errorTypes.NAME_OR_PASSWORD_IS_REQUIRED:
-      message = "Name or password is required";
+      message = "Username or password is required";
       break;
     case errorTypes.USER_ALREADY_EXISTS:
       message = "User already exists";

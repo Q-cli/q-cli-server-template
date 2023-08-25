@@ -20,8 +20,10 @@ export class UserService {
     return result;
   }
 
-  async getUserByName(name: string) {
-    const result = await db?.collection<User.User>("users").findOne({ name });
+  async getUserByName(username: string) {
+    const result = await db
+      ?.collection<User.User>("users")
+      .findOne({ username });
     return result;
   }
 
@@ -49,12 +51,10 @@ export class UserService {
     // @ts-ignore
     updateData._id && delete updateData._id;
 
-    console.log(_id, updateData);
-
     const result = await db
       ?.collection<User.User>("users")
       .updateOne(formatQueryParams({ _id }), { $set: updateData });
-    console.log(result);
+
     return result;
   }
 }

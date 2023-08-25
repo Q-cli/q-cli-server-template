@@ -36,7 +36,7 @@ export async function logRequestInfoMiddleware(ctx: CTX, next: Next) {
   console.log(
     `${dayjs().format("YYYY-MM-DD HH:mm:ss")} ${ctx.request.method} ${ctx.request.path} (${
       ctx.user?._id ?? ""
-    })${ctx.user?.name ?? ""}`
+    })${ctx.user?.username ?? ""}`
   );
   await next();
 }
