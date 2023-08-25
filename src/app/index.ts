@@ -9,8 +9,8 @@ const app = new koa();
 
 app.use(log4js.koaLogger(log4js.getLogger("http"), { level: "auto" }));
 app.use(bodyParser());
-app.use(vertifyAuth);
 app.use(logRequestInfoMiddleware);
+app.use(vertifyAuth);
 
 useRouter(app);
 
