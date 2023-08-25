@@ -3,7 +3,8 @@ import { CTX } from "../utils/interface";
 import whitePath from "../constants/white-path";
 import errorTypes from "../constants/error-types";
 import { formatToken } from "../utils";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
+import logger from "../utils/logger";
 
 export async function vertifyAuth(ctx: CTX, next: Next) {
   const token = ctx.cookies.get("token");
@@ -33,10 +34,10 @@ export async function vertifyAuth(ctx: CTX, next: Next) {
 }
 
 export async function logRequestInfoMiddleware(ctx: CTX, next: Next) {
-  console.log(
-    `${dayjs().format("YYYY-MM-DD HH:mm:ss")} ${ctx.request.method} ${ctx.request.path} (${
-      ctx.user?._id ?? ""
-    })${ctx.user?.username ?? ""}`
+  logger.info(
+    `${ctx.request.method} ${ctx.request.path} (${ctx.user?._id ?? ""})${
+      ctx.user?.username ?? ""
+    }`
   );
   await next();
 }

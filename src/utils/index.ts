@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import fs from "fs";
 import path from "path";
 import { ObjectId } from "mongodb";
+import logger from "./logger";
 
 export function responseFormat(
   success: boolean,
@@ -20,10 +21,31 @@ export function responseFormat(
   };
 
   if (typeof result !== "string") {
+    if (success) {
+      logger.info(
+        JSON.stringify({
+          ...res,
+          ...result,
+        })
+      );
+    } else {
+      logger.error(
+        JSON.stringify({
+          ...res,
+          ...result,
+        })
+      );
+    }
     return {
       ...res,
       ...result,
     };
+  }
+
+  if (success) {
+    logger.info(JSON.stringify(res));
+  } else {
+    logger.error(JSON.stringify(res));
   }
 
   return res;

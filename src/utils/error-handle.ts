@@ -1,13 +1,13 @@
 import { responseFormat } from ".";
 import errorTypes from "../constants/error-types";
 import { CTX } from "./interface";
+import logger from './logger';
 
 export default function errorHandle(error: Error, ctx: CTX<any>) {
   let status = 200,
     message;
 
-  console.error(error.message);
-  console.log();
+  logger.error(error.message);
 
   switch (error.message) {
     case errorTypes.NAME_OR_PASSWORD_IS_REQUIRED:

@@ -1,4 +1,5 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
+import logger from '../utils/logger';
 
 const client = new MongoClient("mongodb://localhost:27017", {
   serverApi: {
@@ -11,10 +12,10 @@ const client = new MongoClient("mongodb://localhost:27017", {
 client
   .connect()
   .then(() => {
-    console.log("mongodb is connected.");
+    logger.info("mongodb is connected.");
   })
   .catch((err) => {
-    console.error("mongodb connect failed: ", err);
+    logger.error("mongodb connect failed: ", err);
   });
 
 export function getDb(dbName: string = "server_template") {

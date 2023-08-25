@@ -26,7 +26,7 @@ export class UserController {
 
   async deleteUserById(ctx: CTX, next: Next) {
     const result = await userService.deleteUserById(ctx.request.query);
-    ctx.body = responseFormat(true, { data: result });
+    ctx.body = responseFormat(!!result.deletedCount, { data: result });
   }
 
   async updateUser(ctx: CTX, next: Next) {
