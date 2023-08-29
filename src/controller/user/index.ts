@@ -21,7 +21,7 @@ export class UserController {
   async getList(ctx: CTX, next: Next) {
     const params = ctx.request.query as User.Params;
     const result = await userService.getUserList(params);
-    ctx.body = responseFormat(true, { list: result });
+    ctx.body = responseFormat(true, { data: result });
   }
 
   async deleteUserById(ctx: CTX, next: Next) {

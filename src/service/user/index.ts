@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { getDb } from "../../SQL/database";
 import { formatQueryParams, generateTimeForNow } from "../../utils";
 
@@ -28,17 +27,28 @@ export class UserService {
   }
 
   async getUserList(params: User.Params) {
-    const query = formatQueryParams(params);
+    const { query, sortOptions, pageParams } = formatQueryParams(params);
 
-    const result = await db
-      .collection<User.User>("users")
+    const collection = db.collection<User.User>("users");
+    const total = await collection.countDocuments();
+
+    const list = await collection
       .find(query)
+      .sort(sortOptions)
+      .skip(pageParams.skip)
+      .limit(pageParams.limit)
       .toArray();
-    return result;
+
+    return {
+      list,
+      total,
+      current: pageParams.current,
+      pageSize: pageParams.pageSize,
+    };
   }
 
   async deleteUserById(params: User.Params) {
-    const query = formatQueryParams(params);
+    const { query } = formatQueryParams(params);
     const result = await db?.collection<User.User>("users").deleteOne(query);
     return result;
   }
@@ -53,7 +63,7 @@ export class UserService {
 
     const result = await db
       ?.collection<User.User>("users")
-      .updateOne(formatQueryParams({ _id }), { $set: updateData });
+      .updateOne(formatQueryParams({ _id }).query, { $set: updateData });
 
     return result;
   }

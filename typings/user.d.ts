@@ -1,5 +1,5 @@
 declare namespace User {
-  interface Params {
+  interface Params extends Common.PageParams {
     _id?: string;
     username?: string;
   }
